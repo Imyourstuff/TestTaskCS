@@ -24,10 +24,9 @@
             if (connection.State != System.Data.ConnectionState.Open)
                 await connection.OpenAsync(ct);
 
-            // Транзакция будет автоматически откачена, если Commit не будет вызван
+            // Пишет автоматически откачена, если Commit не будет вызван надеюсь...
             await using var transaction = await connection.BeginTransactionAsync(ct);
 
-            // Удаляем старые записи для этого файла (перезапись)
             await using (var deleteCmd = new NpgsqlCommand(
                 @"DELETE FROM ""Values"" WHERE ""FileName"" = @fileName",
                 connection, transaction))
@@ -129,14 +128,12 @@
 
                 await writer.CompleteAsync(ct);
             }
-
-            // Вычисление медианы
+            
             valuesForMedian.Sort();
             double median = valuesForMedian.Count % 2 == 0
                 ? (valuesForMedian[rowCount / 2 - 1] + valuesForMedian[rowCount / 2]) / 2
                 : valuesForMedian[rowCount / 2];
 
-            // Вставка или обновление агрегированного результата
             var upsertResultCmd = @"
                 INSERT INTO ""Results"" (""FileName"", ""TimeDeltaSeconds"", ""FirstOperationStart"", ""AvgExecutionTime"", ""AvgValue"", ""MedianValue"", ""MaxValue"", ""MinValue"")
                 VALUES (@fileName, @timeDelta, @firstStart, @avgExec, @avgValue, @median, @max, @min)

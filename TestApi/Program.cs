@@ -18,14 +18,13 @@ builder.Services.AddScoped<IDataService, DataService>();
 
 var app = builder.Build();
 
-// Apply migrations at startup (optional, for development)
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await dbContext.Database.MigrateAsync();
 }
 
-// Configure pipeline
+// СВАГА 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

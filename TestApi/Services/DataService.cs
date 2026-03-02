@@ -12,10 +12,9 @@ public class DataService : IDataService
 
     public async Task<List<ResultDto>> GetResultsAsync(ResultFilter filter)
     {
-        // Начинаем запрос к таблице Results без отслеживания (AsNoTracking для оптимизации)
         var query = _context.Results.AsNoTracking();
 
-        // Применяем фильтры, если они заданы
+        // фильтрация
         if (!string.IsNullOrEmpty(filter.FileName))
             query = query.Where(r => r.FileName == filter.FileName);
 
@@ -37,7 +36,6 @@ public class DataService : IDataService
         if (filter.AvgExecutionTimeTo.HasValue)
             query = query.Where(r => r.AvgExecutionTime <= filter.AvgExecutionTimeTo.Value);
 
-        // Выполняем запрос и проецируем результат в DTO
         return await query
             .Select(r => new ResultDto
             {
