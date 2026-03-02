@@ -4,3 +4,12 @@
 ### Взаимодействие с проектом
 Удобнее всего открыть Swagger UI по адресу https://localhost:7101/swagger или http://localhost:5003/swagger.
 Если по ним не открывает то проверить порты в консоли.
+
+### Если вдруг не сможет создать таблицы автоматически то в консоли NuGet
+```
+Add-Migration InitialCreate
+```
+затем 
+```
+Update-Database
+```
